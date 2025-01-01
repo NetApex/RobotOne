@@ -52,8 +52,8 @@
 //#define ILI9481_DRIVER
 //#define ILI9486_DRIVER
 //#define ILI9488_DRIVER     // WARNING: Do not connect ILI9488 display SDO to MISO if other devices share the SPI bus (TFT SDO does NOT tristate when CS is high)
-//#define ST7789_DRIVER      // Full configuration option, define additional parameters below for this display
-#define ST7789_2_DRIVER    // Minimal configuration option, define additional parameters below for this display
+#define ST7789_DRIVER      // Full configuration option, define additional parameters below for this display
+//#define ST7789_2_DRIVER    // Minimal configuration option, define additional parameters below for this display
 //#define R61581_DRIVER
 //#define RM68140_DRIVER
 //#define ST7796_DRIVER
@@ -170,9 +170,9 @@
 #define TFT_CS   D4 // Chip select control pin to TFT CS
 #define TFT_DC   D5 // Data Command control pin to TFT DC (may be labelled RS = Register Select)
 #define TFT_RST  -1 // Set TFT_RST to -1 if the display RESET is connected to processor reset
-                    // Use an GPIO pin for initial testing as connecting to processor reset
-                    // may not work (pulse too short at power up?)
-
+// #define TFT_MISO   // Use an GPIO pin for initial testing as connecting to processor reset
+#define TFT_SCLK  D13  // may not work (pulse too short at power up?)
+#define TFT_MOSI  D12
 
 // For NodeMCU - use pin numbers in the form PIN_Dx where Dx is the NodeMCU pin designation
 //#define TFT_MISO  PIN_D6  // Automatically assigned with ESP8266 if not defined
