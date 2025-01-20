@@ -1,38 +1,21 @@
-/*
- Adapted from the Adafruit and Xark's PDQ graphicstest sketch.
-
- See end of file for original header text and MIT license info.
- 
- This sketch uses the GLCD font only.
-
- Make sure all the display driver and pin connections are correct by
- editing the User_Setup.h file in the TFT_eSPI library folder.
-
- #########################################################################
- ###### DON'T FORGET TO UPDATE THE User_Setup.h FILE IN THE LIBRARY ######
- #########################################################################
- */
-
-// Include Particle Device OS APIs
 #include "Particle.h"
-#include <TFT_eSPI.h> // Hardware-specific library
+#include <TFT_eSPI.h> 
 
-// Let Device OS manage the connection to the Particle Cloud
 SYSTEM_MODE(AUTOMATIC);
-
-// Run the application and system concurrently in separate threads
 SYSTEM_THREAD(ENABLED);
 
-TFT_eSPI display1 = TFT_eSPI();  // Create object for display 1
-
-// Addresses for the displays (check your display documentation for the correct addresses)
-#define DISPLAY1_CS   D4
+TFT_eSPI display1 = TFT_eSPI(); 
+#define DISPLAY1_CS  D4
 
 // Eye parameters 
-int leftEyeX = 120;  
+int leftEyeX = 100;  
 int leftEyeY = 110;   
 int eyeRadius = 90;   
 int pupilRadius = 30; 
+
+// Variables to store the previous pupil position
+int prevLeftEyeX = leftEyeX;
+int prevLeftEyeY = leftEyeY;
 
 void setup(void) {
   Serial.begin(115200);
@@ -40,15 +23,34 @@ void setup(void) {
   display1.init();
   Serial.println("Display initialized"); 
   display1.setRotation(1); 
-  display1.fillScreen(TFT_BLACK);  // Start with a gold background
+  display1.fillScreen(TFT_BLACK); 
   pinMode(DISPLAY1_CS, OUTPUT);
   digitalWrite(DISPLAY1_CS, HIGH); 
+
+  SPI.beginTransaction(SPISettings(40000000, MSBFIRST, SPI_MODE0)); 
+
+  // Draw the initial eye and pupil
+  display1.fillCircle(100, 110, eyeRadius, TFT_WHITE); 
+  display1.fillCircle(leftEyeX, leftEyeY, pupilRadius, TFT_BLACK); 
 }
 
 void loop() {
+  display1.startWrite(); 
 
-  display1.fillCircle(120, 110, eyeRadius, TFT_WHITE); 
+  // Erase the previous pupil (draw a gold circle over it)
+  display1.fillCircle(prevLeftEyeX, prevLeftEyeY, pupilRadius, TFT_BLACK); 
+
+  // Draw the new pupil
   display1.fillCircle(leftEyeX, leftEyeY, pupilRadius, TFT_BLACK); 
+
+  display1.endWrite(); 
+
+  // Update the previous pupil position
+  prevLeftEyeX = leftEyeX;
+  prevLeftEyeY = leftEyeY;
+
+  // Add code here to change leftEyeX, leftEyeY 
+  // to animate the pupils (e.g., make them look left, right, etc.)
 
   delay(100); 
 }
